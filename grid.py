@@ -1,7 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import matplotlib.transforms as trans
-import numpy
+import numpy as np
 import random
 
 
@@ -26,10 +26,14 @@ class Grid:
         self.positions = self.nodePosition()
         self.G.add_nodes_from(self.nodes)
         self.G.add_edges_from(self.edges)
+        self.randomStart()
+        print(self.nodes)
+        print(len(self.nodes))
+        self.colorChange()
 
 
         print(nx.info(self.G))
-        nx.draw_networkx(self.G,pos=self.positions, node_color='red')
+        nx.draw_networkx(self.G,pos=self.positions, node_color=self.colorChange())
 
         plt.show()
 
@@ -55,16 +59,15 @@ class Grid:
         if self.board_type == 0:
             for i in range(self.size):
                 for j in range(i+1):
-                    self.nodes[(i,j)] = 1
+                    self.nodes[(i,j)] = "blue"
 
         elif self.board_type == 1:
             for i in range(self.size):
                 for j in range(self.size):
-                    self.nodes[(i,j)] = 1
+                    self.nodes[(i,j)] = "blue"
 
     def addNodes(self):
         self.G.add_nodes_from(self.nodes)
-        print(self.nodes)
 
     def createEdges(self):
             for (i,j) in self.nodes:
@@ -72,30 +75,45 @@ class Grid:
                     if self.checkEdges(i,j,k,l):
                         self.edges.append(((i,j),(k,l)))
 
-            print(self.edges)
-
     def checkEdges(self,i,j,k,l):
-        if i == k + 1 and j == l + 1:
-            return True
-        elif i == k + 1 and j == l:
-            return True
-        elif i == k and j == l + 1:
-            return True
-        else:
-            return False
+        if self.board_type == 0:
+            if i == k + 1 and j == l + 1:
+                return True
+            elif i == k + 1 and j == l:
+                return True
+            elif i == k and j == l + 1:
+                return True
+            else:
+                return False
+
+        elif self.board_type == 1:
+            if i == k + 1 and j == l - 1:
+                return True
+            elif i == k + 1 and j == l:
+                return True
+            elif i == k and j == l + 1:
+                return True
+            else:
+                return False
 
     def randomStart(self):
-        x = Math.random.rand(0,self.size)
-        y = Math.random.rand(0,self.size)
-        self.nodes[(x,y)] = 0
+        x = np.random.randint(0,self.size)
+        y = np.random.randint(0,self.size)
+        self.nodes[(x,y)] = "red"
 
     def colorChange(self):
+        color_list = []
         for (i,j) in self.nodes:
-            colors.append('blue')
+            temp = self.nodes[(i,j)]
+            color_list.append(temp)
+
+        return color_list
 
 
 
-g = Grid(0,4)
+
+
+g = Grid(1,4)
 g.createNodes()
 g.addNodes()
 g.createEdges()
